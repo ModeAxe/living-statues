@@ -1,0 +1,4 @@
+repository "living-statues@ModeAxe@cloud"
+  path "/"
+    br "/main"
+    co "/main"
