@@ -5,8 +5,11 @@ using UnityEngine;
 public class StateManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    public static string CURRENTSTATE = "Idle";
+    public static string CURRENTSTATE = "Static";
     private string PREVIOUSSTATE;
+
+    public bool ManualOverride = false;
+    public int OverrideStateIndex = 0;
 
     public static Dictionary<string, string> STATES = new Dictionary<string, string>()
     {
@@ -19,9 +22,12 @@ public class StateManager : MonoBehaviour
         { "Invisible", "Invisible"}
     };
 
-    private List<string> statesList = new List<string> { "Static", "Welcome", "Hero", "FollowLeft", "FollowRight", "Mimic", "Invisible" };
+    //private List<string> statesList = new List<string> { "Static", "Welcome", "Hero", "FollowLeft", "FollowRight", "Mimic", "Invisible" };
+    private List<string> statesList = new List<string> { "Static", "Welcome", "Mimic" };
 
     public List<GameObject> characters = new List<GameObject>();
+
+    public GameObject WelcomeProp; 
 
 
     //Timers
@@ -32,7 +38,8 @@ public class StateManager : MonoBehaviour
 
     public float MaxStaticTime = 60f;
 
-
+    public float MaxMimicTime = 60f;
+    public float MinMimicTime = 20f;
 
 
 
@@ -41,6 +48,8 @@ public class StateManager : MonoBehaviour
         //initialize timers
         timer = Time.deltaTime;
         timeSinceStateChange = Time.deltaTime;
+
+        SetState(statesList[0]);
         
     }
 
@@ -53,9 +62,19 @@ public class StateManager : MonoBehaviour
         //update state
         if (timer > TimeInverval)
         {
-            var newState = statesList[(int)Random.Range(0, statesList.Count)];
+            int stateIndex = ManualOverride ? OverrideStateIndex : (int)Random.Range(0, statesList.Count);
+            var newState = statesList[stateIndex];
             SetState(newState);
             timer = 0f;
+        }
+
+        if (CURRENTSTATE == "Welcome")
+        {
+            WelcomeProp.SetActive(true);
+        }
+        else
+        {
+            WelcomeProp.SetActive(false);
         }
 
 
@@ -75,7 +94,8 @@ public class StateManager : MonoBehaviour
 
             foreach (GameObject character in characters)
             {
-                character.BroadcastMessage("SetState", state);
+                if(character.activeInHierarchy)
+                    character.BroadcastMessage("SetState", state);
             }
         }
         catch
