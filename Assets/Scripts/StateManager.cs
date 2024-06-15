@@ -1,6 +1,9 @@
+using com.rfilkov.kinect;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static com.rfilkov.kinect.KinectInterop;
 
 public class StateManager : MonoBehaviour
 {
@@ -22,8 +25,8 @@ public class StateManager : MonoBehaviour
         { "Invisible", "Invisible"}
     };
 
-    //private List<string> statesList = new List<string> { "Static", "Welcome", "Hero", "FollowLeft", "FollowRight", "Mimic", "Invisible" };
-    private List<string> statesList = new List<string> { "Static", "Welcome", "Mimic" };
+    private List<string> statesList = new List<string> { "Static", "Welcome", "Hero", "FollowLeft", "FollowRight", "Mimic", "Invisible" };
+    //private List<string> statesList = new List<string> { "Static", "Welcome", "Mimic" };
 
     public List<GameObject> characters = new List<GameObject>();
 
@@ -42,6 +45,10 @@ public class StateManager : MonoBehaviour
     public float MinMimicTime = 20f;
 
 
+    // primary kinect sensor data structure
+    private KinectInterop.SensorData sensorData = null;
+    private KinectManager kinectManager = null;
+    public int sensorIndex = 0;
 
     void Start()
     {
@@ -50,19 +57,51 @@ public class StateManager : MonoBehaviour
         timeSinceStateChange = Time.deltaTime;
 
         SetState(statesList[0]);
-        
+
+
+        //Get Sensor Data
+        try
+        {
+            // get sensor data
+            kinectManager = KinectManager.Instance;
+            if (kinectManager && kinectManager.IsInitialized())
+            {
+                sensorData = kinectManager.GetSensorData(sensorIndex);
+            }
+
+            if (sensorData == null || sensorData.sensorInterface == null)
+            {
+                throw new Exception("KinectManager is missing or not initialized.");
+            }
+        }
+        catch (DllNotFoundException ex)
+        {
+            Debug.LogError(ex.ToString());
+            //if (debugText != null)
+            //    debugText.text = "Please check the SDK installations.";
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+            //if (debugText != null)
+            //    debugText.text = ex.Message;
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
         //check current conditions
-
+        if (CURRENTSTATE == "Mimic" && kinectManager.NumberOfTrackedUsers() == 0)
+        {
+            SetState(STATES["Welcome"]);
+        }
 
         //update state
         if (timer > TimeInverval)
         {
-            int stateIndex = ManualOverride ? OverrideStateIndex : (int)Random.Range(0, statesList.Count);
+            int stateIndex = ManualOverride ? OverrideStateIndex : (int)UnityEngine.Random.Range(0, statesList.Count);
             var newState = statesList[stateIndex];
             SetState(newState);
             timer = 0f;
@@ -77,9 +116,11 @@ public class StateManager : MonoBehaviour
             WelcomeProp.SetActive(false);
         }
 
-
         //update timers
         timer += Time.deltaTime;
+
+        Debug.Log("PREV:" + PREVIOUSSTATE);
+        Debug.Log("CURR:" + CURRENTSTATE);
 
     }
 

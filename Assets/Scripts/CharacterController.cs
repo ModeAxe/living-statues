@@ -8,6 +8,8 @@ public class CharacterController : MonoBehaviour
 
     public GameObject characterMirror;
 
+    private GameObject anchor;
+
     public bool RotateStatic = true;
     public float RotationSpeed = 2.0f;
 
@@ -30,6 +32,7 @@ public class CharacterController : MonoBehaviour
     {
         //state = "Static";    
         animator = GetComponent<Animator>();
+        anchor = GameObject.Find("Anchor");
     }
 
     // Update is called once per frame
@@ -44,7 +47,7 @@ public class CharacterController : MonoBehaviour
         }
         else
         {
-            gameObject.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
+            gameObject.transform.SetPositionAndRotation(anchor.transform.position, Quaternion.identity);
         }
         if (state == "Mimic")
         {
@@ -55,6 +58,7 @@ public class CharacterController : MonoBehaviour
             }
 
             Renderer[] renderersMirror = characterMirror.GetComponentsInChildren<Renderer>();
+            characterMirror.transform.SetPositionAndRotation(anchor.transform.position, Quaternion.identity);
             foreach (Renderer renderer in renderersMirror)
             {
                 renderer.enabled = true;
@@ -68,6 +72,7 @@ public class CharacterController : MonoBehaviour
                 renderer.enabled = true;
             }
             Renderer[] renderersMirror = characterMirror.GetComponentsInChildren<Renderer>();
+            characterMirror.transform.SetPositionAndRotation(anchor.transform.position, Quaternion.identity);
             foreach (Renderer renderer in renderersMirror)
             {
                 renderer.enabled = false;
