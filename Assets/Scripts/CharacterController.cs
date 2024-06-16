@@ -15,6 +15,8 @@ public class CharacterController : MonoBehaviour
 
     private string state;
     private Animator animator;
+    private AnimatorOverrideController overrideController;
+    public AnimationClip[] wildCardClips;
 
     public static Dictionary<string, string> stateTrigger = new Dictionary<string, string>()
     {
@@ -24,14 +26,20 @@ public class CharacterController : MonoBehaviour
         { "FollowLeft", "TrAnyToFollowLeft"},
         { "FollowRight", "TrAnyToFollowRight" },
         { "Mimic", "TrAnyToMimic"},
-        { "Invisible", "TrAnyToInvisible"}
+        { "Invisible", "TrAnyToInvisible"},
+        { "Wildcard", "TrAnyToWildcard" },
+        { "Loaded", "TrAnyToLoaded" }
     };
 
+    public GameObject objectToRecord;
 
     void Start()
     {
         //state = "Static";    
         animator = GetComponent<Animator>();
+        overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        animator.runtimeAnimatorController = overrideController;
+
         anchor = GameObject.Find("Anchor");
     }
 
@@ -40,6 +48,14 @@ public class CharacterController : MonoBehaviour
     {
         if (state != StateManager.CURRENTSTATE) { SetState(StateManager.CURRENTSTATE); }
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            state = "Wildcard";
+            StateManager.CURRENTSTATE = state;  
+            overrideController["Wildcard"] = wildCardClips[(int)Random.Range(0, wildCardClips.Length)];
+            Debug.Log(overrideController["Wildcard"]);
+            SetState("Wildcard");
+        }
 
         if (state == "Static")
         {
@@ -100,5 +116,10 @@ public class CharacterController : MonoBehaviour
     {
         animator.SetTrigger(stateTrigger["Mimic"]);
         this.state = "Mimic";
+    }
+
+    public GameObject GetObjectToRecord()
+    {
+        return objectToRecord;
     }
 }

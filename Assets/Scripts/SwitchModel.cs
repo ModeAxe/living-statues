@@ -13,12 +13,15 @@ public class SwitchModel : MonoBehaviour
     public int MaxTime = 60;
     public int MinTime = 30;
     private float timer;
+    private float switchTimeInterval;
 
 
     public List<GameObject> options = new List<GameObject>();
+    private static GameObject currentActiveCharacter;
 
     void Start()
     {
+        switchTimeInterval = Random.Range(MinTime, MaxTime);
         Switch();        
     }
 
@@ -31,12 +34,15 @@ public class SwitchModel : MonoBehaviour
         }
         if (AutoSwitch)
         {
-            if (timer > MaxTime)
+            if (timer > switchTimeInterval)
             {
                 Switch();
                 timer = 0f;
+                switchTimeInterval = Random.Range(MinTime, MaxTime);
             }
             timer += Time.deltaTime;
+            //Debug.Log(timer);
+            //Debug.Log(switchTimeInterval);
         }
 
     }
@@ -51,6 +57,12 @@ public class SwitchModel : MonoBehaviour
         }
 
         options[randomIndex].SetActive(true);
+        currentActiveCharacter = options[randomIndex];
         Debug.Log(options[randomIndex].name);
+    }
+
+    public static GameObject GetActiveCharacter()
+    {
+        return currentActiveCharacter;
     }
 }

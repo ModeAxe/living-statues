@@ -22,10 +22,12 @@ public class StateManager : MonoBehaviour
         { "FollowLeft", "FollowLeft"},
         { "FollowRight", "FollowRight" },
         { "Mimic", "Mimic"},
-        { "Invisible", "Invisible"}
+        { "Invisible", "Invisible"},
+        { "Wildcard", "Wildcard"},
+        { "Loaded", "Loaded"}
     };
 
-    private List<string> statesList = new List<string> { "Static", "Welcome", "Hero", "FollowLeft", "FollowRight", "Mimic", "Invisible" };
+    private List<string> statesList = new List<string> { "Static", "Welcome", "Hero", "FollowLeft", "FollowRight", "Mimic", "Invisible", "Wilcard", "Loaded" };
     //private List<string> statesList = new List<string> { "Static", "Welcome", "Mimic" };
 
     public List<GameObject> characters = new List<GameObject>();
@@ -35,20 +37,22 @@ public class StateManager : MonoBehaviour
 
     //Timers
     public float TimeInverval = 5.0f;
-    private float timer;
+    private float timer = 0;
 
     private float timeSinceStateChange;
 
-    public float MaxStaticTime = 60f;
-
-    public float MaxMimicTime = 60f;
-    public float MinMimicTime = 20f;
-
+    [Header("Sta, Wel, Hero, FLeft, FRight, Mim, Inv, Wild, Load")]
+    public int[] MaxTimes = new int[9];
+    public int[] MinTimes = new int[9];
 
     // primary kinect sensor data structure
     private KinectInterop.SensorData sensorData = null;
     private KinectManager kinectManager = null;
     public int sensorIndex = 0;
+
+    private bool isRecording = false;
+    private float recordingTimer = 0;
+    private GameObject currentRecordingCharacter;
 
     void Start()
     {
@@ -95,6 +99,8 @@ public class StateManager : MonoBehaviour
         //check current conditions
         if (CURRENTSTATE == "Mimic" && kinectManager.NumberOfTrackedUsers() == 0)
         {
+            int WelcomeIndex = 1;
+            TimeInverval = UnityEngine.Random.Range(MinTimes[WelcomeIndex], MaxTimes[WelcomeIndex]);
             SetState(STATES["Welcome"]);
         }
 
@@ -103,9 +109,32 @@ public class StateManager : MonoBehaviour
         {
             int stateIndex = ManualOverride ? OverrideStateIndex : (int)UnityEngine.Random.Range(0, statesList.Count);
             var newState = statesList[stateIndex];
-            SetState(newState);
             timer = 0f;
+            TimeInverval = UnityEngine.Random.Range(MinTimes[stateIndex], MaxTimes[stateIndex]);
+            SetState(newState);
         }
+
+        if (CURRENTSTATE == "Mimic" && timer > 10 && timer < 30 && !isRecording)
+        {
+            //Get Active Object
+            //currentRecordingCharacter = SwitchModel.GetActiveCharacter().transform.GetChild(0).gameObject;
+            //Start Recording
+            //currentRecordingCharacter.GetComponent<CharacterController>().GetObjectToRecord().GetComponent<UnityAnimationRecorder>().StartRecording();
+            //Start Recording Timer
+            isRecording = true;
+            Debug.Log("Recording Started");
+        }
+
+        if (isRecording && recordingTimer > 20)
+        {
+            //Stop Recording
+            //currentRecordingCharacter.GetComponent<CharacterController>().GetObjectToRecord().GetComponent<UnityAnimationRecorder>().StopRecording();
+            //Reset recording timer
+            recordingTimer = 0;
+            isRecording = false;
+        }
+
+        //Debug.Log(recordingTimer);
 
         if (CURRENTSTATE == "Welcome")
         {
@@ -119,8 +148,10 @@ public class StateManager : MonoBehaviour
         //update timers
         timer += Time.deltaTime;
 
-        Debug.Log("PREV:" + PREVIOUSSTATE);
-        Debug.Log("CURR:" + CURRENTSTATE);
+        if (isRecording)
+        {
+            recordingTimer += Time.deltaTime;
+        }
 
     }
 
