@@ -153,6 +153,11 @@ public class StateManager : MonoBehaviour
             recordingTimer += Time.deltaTime;
         }
 
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            gameObject.GetComponent<InvisibleStateManager>().CreateInvisible(SwitchModel.GetActiveCharacter());
+        }
+
     }
 
     public void SetState(string state)
@@ -163,6 +168,11 @@ public class StateManager : MonoBehaviour
             CURRENTSTATE = STATES[state];
 
             Debug.Log("Current State: " +  CURRENTSTATE);
+
+            if (state == STATES["Invisible"])
+            {
+                gameObject.GetComponent<InvisibleStateManager>().CreateInvisible(SwitchModel.GetActiveCharacter());
+            }
 
             foreach (GameObject character in characters)
             {
