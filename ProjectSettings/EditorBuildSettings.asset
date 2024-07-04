@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/FIRST FRIDAY DEMO.unity
     guid: 8124e5870f4fd4c779e7a5f994e84ad1
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LIVING STATUES V1.unity
     guid: a468337523f686648bb17d2a04a78043
+  - enabled: 1
+    path: Assets/Scenes/PHOTOBOOTH.unity
+    guid: 3aee0a853034db34f9af0eb1ba691729
   m_configObjects: {}

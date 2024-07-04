@@ -160,6 +160,16 @@ public class StateManager : MonoBehaviour
 
     }
 
+    public void SetRandomState()
+    {
+        int stateIndex = ManualOverride ? OverrideStateIndex : (int)UnityEngine.Random.Range(0, statesList.Count);
+        var newState = statesList[stateIndex];
+        timer = 0f;
+        TimeInverval = UnityEngine.Random.Range(MinTimes[stateIndex], MaxTimes[stateIndex]);
+        SetState(newState);
+    }
+
+
     public void SetState(string state)
     {
         try
@@ -186,5 +196,4 @@ public class StateManager : MonoBehaviour
             Debug.Log("SetState to " + state + " failed. Defaulting to static state");
         }
     }
-
 }
