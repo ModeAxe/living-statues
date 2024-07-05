@@ -97,12 +97,12 @@ public class StateManager : MonoBehaviour
     void Update()
     {
         //check current conditions
-        if (CURRENTSTATE == "Mimic" && kinectManager.NumberOfTrackedUsers() == 0)
-        {
-            int WelcomeIndex = 1;
-            TimeInverval = UnityEngine.Random.Range(MinTimes[WelcomeIndex], MaxTimes[WelcomeIndex]);
-            SetState(STATES["Welcome"]);
-        }
+        //if (CURRENTSTATE == "Mimic" && kinectManager.NumberOfTrackedUsers() == 0)
+        //{
+        //    int WelcomeIndex = 1;
+        //    TimeInverval = UnityEngine.Random.Range(MinTimes[WelcomeIndex], MaxTimes[WelcomeIndex]);
+        //    SetState(STATES["Welcome"]);
+        //}
 
         //update state
         if (timer > TimeInverval)
@@ -122,7 +122,7 @@ public class StateManager : MonoBehaviour
             //currentRecordingCharacter.GetComponent<CharacterController>().GetObjectToRecord().GetComponent<UnityAnimationRecorder>().StartRecording();
             //Start Recording Timer
             isRecording = true;
-            Debug.Log("Recording Started");
+            //Debug.Log("Recording Started");
         }
 
         if (isRecording && recordingTimer > 20)
