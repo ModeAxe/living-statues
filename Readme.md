@@ -15,27 +15,18 @@ List of programs used:
 
 ## Folder structure
 
-The repo is organized as a standard Unity project with an extra folder non-unity related files. Repo uses git lfs
-
-```
-my-document/     # Root directory.
-|- build/        # Folder used to store builded (output) files.
-|- src/          # Markdowns files; one for each chapter.
-|- images/       # Images folder.
-|- metadata.yml  # Metadata content (title, author...).
-|- Makefile      # Makefile used for building our documents.
-```
+The repo is organized as a standard Unity project with an extra folder non-unity related files. Builds are also in this extra folder. The extra folder is called `Non-Unity`. Repo uses git lfs
 
 
 ## The Statues
 
-The interactive living statues are created in Unity3D. 
+A build of the living statues executable can found in the `Non-Unity` folder. To turn on and off specific features (interactivity, switching models, saving photos, saving recorded animation etc) you will have to edit the managers in the Unity project and build a new executable. 
 
 ### Requirements
-To run the live interactive versions of the statues, you will need an Azure Kinect sensor with the necessary body tracking SDK installed.
+To run the live interactive versions of the statues, you will need an [Azure Kinect Sensor](https://learn.microsoft.com/en-us/previous-versions/azure/kinect-dk/about-sensor-sdk) with the necessary body tracking SDK installed.
 
 ### Building 
-`Living Statues` scene. 
+Build the project as you would a standard Unity project targeted for windows. Double check the build settings to make sure you only have one scene in the `Scenes In Build` section and that this scene is the part of the project you want to build i.e photobooth scene for photobooth. 
 
 ### Usage
 `Esc` closes the project
@@ -57,14 +48,14 @@ Segmentation script can be found in the `Non-Unity` folder. Simply change the in
 A build of the photobooth can be found in the `Non-Unity` folder
 
 ### Requirements
-To run the live interactive versions of the statues, you will need an Azure Kinect sensor with the necessary body tracking SDK installed.
+[Azure Kinect Sensor](https://learn.microsoft.com/en-us/previous-versions/azure/kinect-dk/about-sensor-sdk) needed to run the photobooth experience. Technically, the executable does work with the sensor and you will be able to take photos but without any of the interactive elements/camera feeds.  
 
 ### Printing
 For printing, 
 Make sure the `PhotoBoothPrinter.py` python script is running and that the printer you want to use is setup as your default printer in your operating system settings. Change the photo directory in the python script. The script is constantly listening for the addition of new images in that directory. 
 
 ### Building 
-The photobooth is a separate scene in the unity project. 
+Same build instructions as above --just make sure the photobooth scene is the only scene in the build settings.  
 
 ### Usage
 `Esc` closes the project
